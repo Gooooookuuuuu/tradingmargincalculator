@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ Important for responsiveness -->
   <title>Trading Margin Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f6f8;
-      padding: 40px;
+      padding: 20px;
       display: flex;
       justify-content: center;
     }
@@ -19,6 +20,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 400px;
+      box-sizing: border-box;
     }
 
     h2 {
@@ -74,6 +76,28 @@
     #result.error {
       color: red;
     }
+
+    /* ✅ Responsive Styling */
+    @media (max-width: 480px) {
+      .calculator {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      input[type="number"],
+      select,
+      button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      #result {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -92,7 +116,7 @@
       <label for="leverage">Leverage</label>
       <select id="leverage" required>
         <option value="">Select Leverage</option>
-	<option value="1">x1</option>
+        <option value="1">x1</option>
         <option value="5">x5</option>
         <option value="10">x10</option>
         <option value="20">x20</option>
@@ -111,39 +135,38 @@
     <div id="result"></div>
   </div>
 
-<script>
-  document.getElementById('marginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+  <script>
+    document.getElementById('marginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
 
-    const entryPrice = parseFloat(document.getElementById('entryPrice').value);
-    const stopLoss = parseFloat(document.getElementById('stopLoss').value);
-    const maxLoss = parseFloat(document.getElementById('maxLoss').value);
-    const leverage = parseFloat(document.getElementById('leverage').value);
-    const result = document.getElementById('result');
+      const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+      const stopLoss = parseFloat(document.getElementById('stopLoss').value);
+      const maxLoss = parseFloat(document.getElementById('maxLoss').value);
+      const leverage = parseFloat(document.getElementById('leverage').value);
+      const result = document.getElementById('result');
 
-    if (isNaN(entryPrice) || isNaN(stopLoss) || isNaN(maxLoss) || isNaN(leverage)) {
-      result.textContent = "❌ Please enter valid numbers in all fields.";
-      result.className = "error";
-      return;
-    }
+      if (isNaN(entryPrice) || isNaN(stopLoss) || isNaN(maxLoss) || isNaN(leverage)) {
+        result.textContent = "❌ Please enter valid numbers in all fields.";
+        result.className = "error";
+        return;
+      }
 
-    if (entryPrice === stopLoss) {
-      result.textContent = "❌ Entry price and stop loss cannot be the same.";
-      result.className = "error";
-      return;
-    }
+      if (entryPrice === stopLoss) {
+        result.textContent = "❌ Entry price and stop loss cannot be the same.";
+        result.className = "error";
+        return;
+      }
 
-    const isLong = entryPrice > stopLoss;
-    const priceDiff = Math.abs(entryPrice - stopLoss);
-    const positionSize = maxLoss / priceDiff;
-    const positionValue = positionSize * entryPrice;
-    const margin = positionValue / leverage;
+      const isLong = entryPrice > stopLoss;
+      const priceDiff = Math.abs(entryPrice - stopLoss);
+      const positionSize = maxLoss / priceDiff;
+      const positionValue = positionSize * entryPrice;
+      const margin = positionValue / leverage;
 
-    const direction = isLong ? "Long" : "Short";
-    result.textContent = `✅ (${direction} Position) Required Margin: $${margin.toFixed(2)}`;
-    result.className = "success";
-  });
-</script>
-
+      const direction = isLong ? "Long" : "Short";
+      result.textContent = `✅ (${direction} Position) Required Margin: $${margin.toFixed(2)}`;
+      result.className = "success";
+    });
+  </script>
 </body>
 </html>
